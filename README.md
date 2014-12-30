@@ -12,7 +12,8 @@ script for
 other 
 encryption types or filesystems (feel free to fork the project).
 
-Please make sure the path "/mnt/backup" exists before using these scripts.
+If /mnt/backup doesn't exist when running the mount script, then it will be attempted to be created as long as /mnt/ 
+exists.
 
 The procedure of the mounting script will be from /dev/sdX# (partition of a user-specified external drive) to 
 /dev/mapper/backup and finally /mnt/backup. If your device is already decripted (/dev/mapper/backup exists), the 
