@@ -11,7 +11,7 @@ function unmap_backup {
   echo "***sudo cryptsetup close backup***"
   sudo cryptsetup close backup
   status=$?
-  echo "status >> $status" #Debugging purposes
+  #echo "status >> $status" #Debugging purposes
   if [ $status -eq 0 ];
     then
     echo "***Done.***";
