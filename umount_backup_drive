@@ -45,13 +45,13 @@ function unmount_backup {
 
 echo "***Checking status of 'backup'***";
 status=$( sudo cryptsetup status backup );
-if [[ $status != *"backup is active"* ]];
+if [[ $status != *"backup is active"* ]]; #Does $status contain "backup is active"?
   then
-  echo "***The encrypted drive is not in use or active***";
+  echo "***The encrypted drive is not in use or active***"; #/dev/mapper/backup && /mnt/backup shouldn't exist
   df_exit;
-  elif [[ $status == *"backup is active and is in use"* ]]; #/dev/mapper/backup && /mnt/backup
+  elif [[ $status == *"backup is active and is in use"* ]]; #/dev/mapper/backup && /mnt/backup both exist
     then
     unmount_backup;
-  else #/dev/mapper/backup only
+  else #/dev/mapper/backup only; device probably isn't mounted
     unmap_backup;
 fi
