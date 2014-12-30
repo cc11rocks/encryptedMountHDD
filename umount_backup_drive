@@ -1,6 +1,9 @@
 #!/bin/bash
 #This script was created by Clayton Casciato. This requires bash 3.0.0+. With modification, this script can be used in previous versions. This is licenced under the "Modified BSD license"
 
+designated_location="/mnt/backup"; #Full path to mount point
+designated_crypt="backup"; #/dev/mapper/$designated_crypt
+
 function df_exit {
   echo "***df -h***"
   df -h;
@@ -8,8 +11,8 @@ function df_exit {
 }
 
 function unmap_backup {
-  echo "***sudo cryptsetup close backup***"
-  sudo cryptsetup close backup
+  echo "***sudo cryptsetup close $designated_crypt***"
+  sudo cryptsetup close $designated_crypt
   status=$?
   #echo "status >> $status" #Debugging purposes
   if [ $status -eq 0 ];
@@ -28,8 +31,8 @@ function unmap_backup {
 function unmount_backup {
   echo "***df -h***"
   status=$( df -h );
-  echo "***Unmounting /mnt/backup***"
-  sudo umount /mnt/backup
+  echo "***Unmounting $designated_location***"
+  sudo umount $designated_location
   status=$?
 
   #echo "status >> $status" #Debugging purposes
@@ -43,15 +46,15 @@ function unmount_backup {
   fi
 }
 
-echo "***Checking status of 'backup'***";
-status=$( sudo cryptsetup status backup );
-if [[ $status != *"backup is active"* ]]; #Does $status contain "backup is active"?
+echo "***Checking status of '$designated_crypt'***";
+status=$( sudo cryptsetup status $designated_crypt );
+if [[ $status != *"$designated_crypt is active"* ]]; #Does $status contain "$designated_crypt is active"?
   then
-  echo "***The encrypted drive is not in use or active***"; #/dev/mapper/backup && /mnt/backup shouldn't exist
+  echo "***The encrypted drive is not in use or active***"; #/dev/mapper/$designated_crypt && $designated_location shouldn't exist
   df_exit;
-  elif [[ $status == *"backup is active and is in use"* ]]; #/dev/mapper/backup && /mnt/backup both exist
+  elif [[ $status == *"$designated_crypt is active and is in use"* ]]; #/dev/mapper/$designated_crypt && $designated_location both exist
     then
     unmount_backup;
-  else #/dev/mapper/backup only; device probably isn't mounted
+  else #/dev/mapper/$designated_crypt only; device probably isn't mounted
     unmap_backup;
 fi
