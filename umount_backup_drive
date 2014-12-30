@@ -1,0 +1,57 @@
+#!/bin/bash
+#This script was created by Clayton Casciato. This requires bash 3.0.0+. With modification, this script can be used in previous versions. This is licenced under the "Modified BSD license"
+
+function df_exit {
+  echo "***df -h***"
+  df -h;
+  exit;
+}
+
+function unmap_backup {
+  echo "***sudo cryptsetup close backup***"
+  sudo cryptsetup close backup
+  status=$?
+  echo "status >> $status" #Debugging purposes
+  if [ $status -eq 0 ];
+    then
+    echo "***Done.***";
+  else
+    echo "***Unsucessful cryptsetup close***"
+    echo "***df -h***"
+    df -h
+    echo "***fdisk-l***"
+    fdisk-l
+  fi
+  df_exit;
+}
+
+function unmount_backup {
+  echo "***df -h***"
+  status=$( df -h );
+  echo "***Unmounting /mnt/backup***"
+  sudo umount /mnt/backup
+  status=$?
+
+  #echo "status >> $status" #Debugging purposes
+  if [ $status -eq 0 ];
+    then
+    echo "***Successful umount***";
+    unmap_backup;
+    else
+      echo "***Unsucessful umount***";
+      df_exit;
+  fi
+}
+
+echo "***Checking status of 'backup'***";
+status=$( sudo cryptsetup status backup );
+if [[ $status != *"backup is active"* ]];
+  then
+  echo "***The encrypted drive is not in use or active***";
+  df_exit;
+  elif [[ $status == *"backup is active and is in use"* ]]; #/dev/mapper/backup && /mnt/backup
+    then
+    unmount_backup;
+  else #/dev/mapper/backup only
+    unmap_backup;
+fi

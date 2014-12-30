@@ -1,0 +1,57 @@
+#!/bin/bash
+#This script was created by Clayton Casciato. This requires bash 3.0.0+. With modification, this script can be used in previous versions. This is licenced under the "Modified BSD license"
+
+function mount_backup {
+  echo "***sudo mount /dev/mapper/backup /mnt/backup***"
+  sudo mount /dev/mapper/backup /mnt/backup;
+  status=$?
+  #echo "status >> $status" #Debugging purposes
+  if [ $status -eq 0 ];
+    then
+    echo "***Done. 'df -h'***"
+    else
+    echo "***Mount failed. 'df -h'***"
+  fi
+  df_exit;
+}
+
+function df_exit {
+  echo "***df -h***"
+  df -h;
+  exit;
+}
+
+echo "***Checking status of 'backup'***";
+status=$( sudo cryptsetup status backup );
+#echo "***status > $status***"; #Debugging purposes
+if [[ $status == *"backup is active"* ]]; #if status contains string - At this point, it's on /dev/mapper/backup
+  then
+  dfh=$( df -h );
+  #echo "***dfh >> $dfh***" #Debugging
+  if [[ $dfh =~ "/mnt/backup" ]]; #Is the partition on /mnt/backup?
+    then
+    echo "***/mnt/backup is active***";
+    df_exit;
+  else #The device is unencrypted on /dev/mapper/backup, but not mounted to /mnt/backup
+  mount_backup;
+  fi
+fi
+
+#else, /dev/mapper/backup doesn't exist
+
+echo "***sudo fdisk -l***";
+sudo fdisk -l;
+echo "***Enter the /dev/sd + \$X + #***";
+read location;
+echo "***sudo cryptsetup open $location backup***";
+sudo cryptsetup open $location backup;
+status=$?;
+
+#echo "status >> $status" #Debugging purposes
+if [[ $status -eq 0 ]]; #0 == success
+  then
+  mount_backup;
+  else
+  echo "***Cryptsetup open FAILED. 'df -h'***"
+fi
+df_exit;
