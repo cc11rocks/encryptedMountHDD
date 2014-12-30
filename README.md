@@ -3,7 +3,8 @@ encryptedMountHDD
 
 These are productivity scripts to mount and unmount encrypted external devices as a device.
 
-Assumed is that the partition is encrypted with dm-crypt with LUKS with ext4. You may need to modify the script for 
+Assumed is that the partition is encrypted with dm-crypt with LUKS with an ext4 filesystem. You may need to modify the 
+script for 
 other 
 encryption or filesystem types (feel free to fork the project).
 
