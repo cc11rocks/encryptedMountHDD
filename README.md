@@ -22,7 +22,7 @@ script will mount /dev/mapper/backup to /mnt/backup.
 The procedure of the unmounting script will be unmounting /mnt/backup and disabling the mapping (unencrypted form) 
 from 
 /dev/sdX# to 
-/dev/mapper/backup. If /mnt/backup does not exists and /dev/mapper/backup exists, the script will only disable mapping 
+/dev/mapper/backup. If /mnt/backup does not exist and /dev/mapper/backup exists, the script will only disable mapping 
 (unencrypted form).
 
 These scripts are licenced under the modified (3-clause) BSD license.
