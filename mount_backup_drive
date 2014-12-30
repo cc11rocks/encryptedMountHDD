@@ -21,7 +21,27 @@ function df_exit {
   exit;
 }
 
-echo "***Checking status of 'backup'***";
+if [ ! -d "/mnt/" ]; #if /mnt/ doesn't exists, we don't know what to do
+  then
+  echo "/mnt doesn't exist. Please check your configuration";
+  exit;
+fi
+
+echo "***Checking if '/mnt/backup' exists...***";
+if [ ! -d "/mnt/backup/" ]; #if /mnt/backup doesn't exists...
+  then
+  echo "***'/mnt/backup' doesn't exist. Creating now...***"
+  status=$( sudo mkdir /mnt/backup/ )
+  if [[ $status -eq 0 ]]; #Make sure mkdir /mnt/backup succeeded...
+    then
+    echo "***'/mnt/backup/' created.***";
+  else
+    echo "***Attempted creation of '/mnt/backup/' failed***";
+    exit;
+  fi
+fi
+
+echo "***Checking status of 'backup'...***";
 status=$( sudo cryptsetup status backup );
 #echo "***status > $status***"; #Debugging purposes
 if [[ $status == *"backup is active"* ]]; #if status contains string - At this point, it's on /dev/mapper/backup
