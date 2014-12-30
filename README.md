@@ -16,7 +16,7 @@ If /mnt/backup doesn't exist when running the mount script, then it will be atte
 exists.
 
 The procedure of the mounting script will be from /dev/sdX# (partition of a user-specified external drive) to 
-/dev/mapper/backup and finally /mnt/backup. If your device is already decripted (/dev/mapper/backup exists), the 
+/dev/mapper/backup and finally /mnt/backup. If your device is already decrypted (/dev/mapper/backup exists), the 
 script will mount /dev/mapper/backup to /mnt/backup.
 
 The procedure of the unmounting script will be unmounting /mnt/backup and disabling the mapping (unencrypted form) 
