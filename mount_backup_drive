@@ -1,9 +1,12 @@
 #!/bin/bash
 #This script was created by Clayton Casciato. This requires bash 3.0.0+. With modification, this script can be used in previous versions. This is licenced under the "Modified BSD license"
 
+designated_location="/mnt/backup"; #Full path to mount point
+designated_crypt="backup"; #/dev/mapper/$designated_crypt
+
 function mount_backup {
-  echo "***sudo mount /dev/mapper/backup /mnt/backup***"
-  sudo mount /dev/mapper/backup /mnt/backup;
+  echo "***sudo mount /dev/mapper/$designated_crypt $designated_location***"
+  sudo mount /dev/mapper/$designated_crypt $designated_location;
   status=$?
   #echo "status >> $status" #Debugging purposes
   if [ $status -eq 0 ];
@@ -21,51 +24,45 @@ function df_exit {
   exit;
 }
 
-if [ ! -d "/mnt/" ]; #if /mnt/ doesn't exists, we don't know what to do
+echo "***Checking if '$designated_location' exists...***";
+if [ ! -d "$designated_location" ]; #if $designated_location doesn't exist...
   then
-  echo "/mnt doesn't exist. Please check your configuration";
-  exit;
-fi
-
-echo "***Checking if '/mnt/backup' exists...***";
-if [ ! -d "/mnt/backup/" ]; #if /mnt/backup doesn't exists...
-  then
-  echo "***'/mnt/backup' doesn't exist. Creating now...***";
-  sudo mkdir /mnt/backup/;
+  echo "***'$designated_location' doesn't exist. Creating now...***";
+  sudo mkdir $designated_location;
   status=$?;
-  if [[ $status -eq 0 ]]; #Make sure mkdir /mnt/backup succeeded...
+  if [[ $status -eq 0 ]]; #Make sure mkdir $designated_location succeeded...
     then
-    echo "***'/mnt/backup/' created.***";
+    echo "***'$designated_location' created.***";
   else
-    echo "***Attempted creation of '/mnt/backup/' failed***";
+    echo "***Attempted creation of '$designated_location' failed***";
     exit;
   fi
 fi
 
-echo "***Checking status of 'backup'...***";
-status=$( sudo cryptsetup status backup );
+echo "***Checking status of '$designated_crypt'...***";
+status=$( sudo cryptsetup status $designated_crypt );
 #echo "***status > $status***"; #Debugging purposes
-if [[ $status == *"backup is active"* ]]; #if status contains string - At this point, it's on /dev/mapper/backup
+if [[ $status == *"$designated_crypt is active"* ]]; #if status contains string - At this point, it's on /dev/mapper/$designated_crypt
   then
   dfh=$( df -h );
   #echo "***dfh >> $dfh***" #Debugging
-  if [[ $dfh =~ "/mnt/backup" ]]; #Is the partition on /mnt/backup?
+  if [[ $dfh =~ "$designated_location" ]]; #Is the partition on $designated_location?
     then
-    echo "***/mnt/backup is active***";
+    echo "***$designated_location is active***";
     df_exit;
-  else #The device is unencrypted on /dev/mapper/backup, but not mounted to /mnt/backup
+  else #The device is unencrypted on /dev/mapper/$designated_crypt, but not mounted to $designated_location
   mount_backup;
   fi
 fi
 
-#else, /dev/mapper/backup doesn't exist
+#else, /dev/mapper/$designated_crypt doesn't exist
 
 echo "***sudo fdisk -l***";
 sudo fdisk -l;
 echo "***Enter the /dev/sd + \$X + #***";
 read location;
-echo "***sudo cryptsetup open $location backup***";
-sudo cryptsetup open $location backup;
+echo "***sudo cryptsetup open $location $designated_crypt***";
+sudo cryptsetup open $location $designated_crypt;
 status=$?;
 
 #echo "status >> $status" #Debugging purposes
