@@ -30,8 +30,9 @@ fi
 echo "***Checking if '/mnt/backup' exists...***";
 if [ ! -d "/mnt/backup/" ]; #if /mnt/backup doesn't exists...
   then
-  echo "***'/mnt/backup' doesn't exist. Creating now...***"
-  status=$( sudo mkdir /mnt/backup/ )
+  echo "***'/mnt/backup' doesn't exist. Creating now...***";
+  sudo mkdir /mnt/backup/;
+  status=$?;
   if [[ $status -eq 0 ]]; #Make sure mkdir /mnt/backup succeeded...
     then
     echo "***'/mnt/backup/' created.***";
