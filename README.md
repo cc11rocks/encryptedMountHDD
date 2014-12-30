@@ -10,7 +10,7 @@ modify
 the 
 script for 
 other 
-encryption or filesystem types (feel free to fork the project).
+encryption types or filesystems (feel free to fork the project).
 
 Please make sure the path "/mnt/backup" exists before using these scripts.
 
