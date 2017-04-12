@@ -32,9 +32,7 @@ from
 /dev/mapper/$destination_crypt. If $destination_location does not exist and /dev/mapper/$destination_crypt exists, the script will only disable mapping 
 (unencrypted form).
 
-These scripts are licenced under the modified (3-clause) BSD license.
-
 A use case could be for an automated stable point of access to encrypted partitions for backups (e.g. rsnapshot 
 using an external encrypted hard drive).
 
-[License](https://github.com/lptech1024/encryptedMountHDD/blob/master/LICENSE.txt)
+These scripts are [licence](https://github.com/lptech1024/encryptedMountHDD/blob/master/LICENSE.txt)d under the modified (3-clause) BSD license.
