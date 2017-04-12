@@ -36,3 +36,5 @@ These scripts are licenced under the modified (3-clause) BSD license.
 
 A use case could be for an automated stable point of access to encrypted partitions for backups (e.g. rsnapshot 
 using an external encrypted hard drive).
+
+[License](https://github.com/lptech1024/encryptedMountHDD/blob/master/LICENSE.txt)
